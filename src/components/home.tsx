@@ -1,12 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import PracticeArea from "./PracticeArea";
 import ProgressTracker from "./ProgressTracker";
 import { motion } from "framer-motion";
+import { Coins, Settings } from "lucide-react";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState("number-patterns");
+  const [coins, setCoins] = useState(0);
+  const [eggs, setEggs] = useState(0);
+  const [parentMode, setParentMode] = useState(false);
+  const [tempCoins, setTempCoins] = useState(0);
+  const [tempEggs, setTempEggs] = useState(0);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [password, setPassword] = useState("");
+
+  // Load saved coins and eggs from localStorage
+  useEffect(() => {
+    const savedCoins = localStorage.getItem("bianca-coins");
+    const savedEggs = localStorage.getItem("bianca-eggs");
+    if (savedCoins) setCoins(parseInt(savedCoins));
+    if (savedEggs) setEggs(parseInt(savedEggs));
+  }, []);
+
+  // Save coins and eggs to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("bianca-coins", coins.toString());
+    localStorage.setItem("bianca-eggs", eggs.toString());
+  }, [coins, eggs]);
+
+  // Handle earning a coin and automatic conversion to eggs
+  const handleEarnCoin = () => {
+    setCoins((prevCoins) => {
+      const newCoins = prevCoins + 1;
+      if (newCoins >= 10) {
+        setEggs((prevEggs) => prevEggs + Math.floor(newCoins / 10));
+        return newCoins % 10;
+      }
+      return newCoins;
+    });
+  };
+
+  // Handle parent updates
+  const handleParentUpdate = () => {
+    setCoins(tempCoins);
+    setEggs(tempEggs);
+    setParentMode(false);
+  };
+
+  // Handle password verification
+  const handlePasswordSubmit = () => {
+    if (password === "7527") {
+      setTempCoins(coins);
+      setTempEggs(eggs);
+      setParentMode(true);
+      setShowPasswordDialog(false);
+      setPassword("");
+    } else {
+      alert("Incorrect password!");
+      setPassword("");
+    }
+  };
+
+  // Open password dialog
+  const openPasswordDialog = () => {
+    setShowPasswordDialog(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-purple-100 p-4 md:p-8">
@@ -20,6 +89,132 @@ const Home = () => {
           Bianca Huang's Math Adventure
         </h1>
         <p className="text-lg text-blue-600">Fun with Number Patterns!</p>
+
+        {/* Reward Display */}
+        <motion.div
+          className="flex justify-center items-center gap-6 mt-6 bg-gradient-to-r from-yellow-200 to-orange-200 rounded-xl p-4 max-w-md mx-auto border-2 border-yellow-300 relative"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <div className="flex items-center gap-2">
+            <div className="text-3xl">🪙</div>
+            <div className="text-xl font-bold text-yellow-700">{coins}</div>
+            <div className="text-sm text-yellow-600">Golden Coins</div>
+          </div>
+          <div className="w-px h-8 bg-yellow-400"></div>
+          <div className="flex items-center gap-2">
+            <div className="text-3xl">🥚</div>
+            <div className="text-xl font-bold text-orange-700">{eggs}</div>
+            <div className="text-sm text-orange-600">Golden Eggs</div>
+          </div>
+
+          {/* Parent Settings Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute -top-2 -right-2 h-8 w-8 p-0 bg-white/80 hover:bg-white border border-yellow-300"
+            onClick={openPasswordDialog}
+          >
+            <Settings className="h-4 w-4 text-yellow-700" />
+          </Button>
+
+          {/* Password Dialog */}
+          <Dialog
+            open={showPasswordDialog}
+            onOpenChange={setShowPasswordDialog}
+          >
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-purple-600">
+                  Enter Parent Password
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && handlePasswordSubmit()
+                    }
+                    className="w-full"
+                    placeholder="Enter password"
+                  />
+                </div>
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    onClick={handlePasswordSubmit}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowPasswordDialog(false);
+                      setPassword("");
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Parent Settings Dialog */}
+          <Dialog open={parentMode} onOpenChange={setParentMode}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-purple-600">
+                  Parent Settings
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Golden Coins
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={tempCoins}
+                    onChange={(e) =>
+                      setTempCoins(parseInt(e.target.value) || 0)
+                    }
+                    className="w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Golden Eggs
+                  </label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={tempEggs}
+                    onChange={(e) => setTempEggs(parseInt(e.target.value) || 0)}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    onClick={handleParentUpdate}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  >
+                    Update Rewards
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </motion.div>
       </motion.header>
 
       <div className="max-w-6xl mx-auto">
@@ -100,11 +295,7 @@ const Home = () => {
             <TabsContent value="number-patterns" className="mt-0">
               <Card className="border-4 border-yellow-300 bg-yellow-50 shadow-xl">
                 <CardContent className="p-6">
-                  <PracticeArea
-                    mode="number-patterns"
-                    title="Number Pattern Generator"
-                    description="Practice counting in 2s, 3s, 5s, or 10s, starting from any number!"
-                  />
+                  <PracticeArea onEarnCoin={handleEarnCoin} />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -112,11 +303,7 @@ const Home = () => {
             <TabsContent value="crossing-practice" className="mt-0">
               <Card className="border-4 border-green-300 bg-green-50 shadow-xl">
                 <CardContent className="p-6">
-                  <PracticeArea
-                    mode="crossing-practice"
-                    title="Decade & Hundred Crossing Practice"
-                    description="Master counting across decades and hundreds!"
-                  />
+                  <PracticeArea onEarnCoin={handleEarnCoin} />
                 </CardContent>
               </Card>
             </TabsContent>

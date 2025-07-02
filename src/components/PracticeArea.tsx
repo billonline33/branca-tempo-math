@@ -16,13 +16,19 @@ import NumberLine from "./NumberLine";
 
 interface PracticeAreaProps {
   onComplete?: (score: number, total: number) => void;
+  onEarnCoin?: () => void;
 }
 
-const PracticeArea = ({ onComplete = () => {} }: PracticeAreaProps) => {
+const PracticeArea = ({
+  onComplete = () => {},
+  onEarnCoin = () => {},
+}: PracticeAreaProps) => {
   const [practiceMode, setPracticeMode] = useState<"pattern" | "crossing">(
     "pattern",
   );
-  const [patternType, setPatternType] = useState<"2" | "3" | "5" | "10">("2");
+  const [patternType, setPatternType] = useState<"1" | "2" | "3" | "5" | "10">(
+    "1",
+  );
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [startNumber, setStartNumber] = useState<number>(0);
   const [sequence, setSequence] = useState<number[]>([]);
@@ -158,6 +164,9 @@ const PracticeArea = ({ onComplete = () => {} }: PracticeAreaProps) => {
       setScore((prev) => prev + 1);
       setShowPrincessAnimation(true);
 
+      // Award a golden coin for correct answer
+      onEarnCoin();
+
       // Play "Well done Bianca" sound
       if (audioElement) {
         audioElement.play();
@@ -235,6 +244,7 @@ const PracticeArea = ({ onComplete = () => {} }: PracticeAreaProps) => {
                   <SelectValue placeholder="Select pattern" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="1">1s</SelectItem>
                   <SelectItem value="2">2s</SelectItem>
                   <SelectItem value="3">3s</SelectItem>
                   <SelectItem value="5">5s</SelectItem>
@@ -313,6 +323,7 @@ const PracticeArea = ({ onComplete = () => {} }: PracticeAreaProps) => {
                   <SelectValue placeholder="Select pattern" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="1">1s</SelectItem>
                   <SelectItem value="2">2s</SelectItem>
                   <SelectItem value="3">3s</SelectItem>
                   <SelectItem value="5">5s</SelectItem>
@@ -468,8 +479,11 @@ const PracticeArea = ({ onComplete = () => {} }: PracticeAreaProps) => {
                         <div className="text-2xl font-bold text-white mb-2">
                           ✨ WELL DONE BIANCA! ✨
                         </div>
-                        <div className="text-lg text-pink-100">
+                        <div className="text-lg text-pink-100 mb-2">
                           You're a math princess! 👑
+                        </div>
+                        <div className="text-xl text-yellow-200 font-bold">
+                          🪙 +1 Golden Coin!
                         </div>
                       </motion.div>
                     </div>
