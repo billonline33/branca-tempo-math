@@ -24,10 +24,10 @@ const PracticeArea = ({
   onEarnCoin = () => {},
 }: PracticeAreaProps) => {
   const [practiceMode, setPracticeMode] = useState<"pattern" | "crossing">(
-    "pattern",
+    "pattern"
   );
   const [patternType, setPatternType] = useState<"1" | "2" | "3" | "5" | "10">(
-    "1",
+    "1"
   );
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
   const [startNumber, setStartNumber] = useState<number>(0);
@@ -41,13 +41,13 @@ const PracticeArea = ({
   const [userInput, setUserInput] = useState<string>("");
   const [isExerciseActive, setIsExerciseActive] = useState<boolean>(false);
   const [crossingType, setCrossingType] = useState<"decade" | "hundred">(
-    "decade",
+    "decade"
   );
   const [numberOfNumbers, setNumberOfNumbers] = useState<number>(40);
   const [showPrincessAnimation, setShowPrincessAnimation] =
     useState<boolean>(false);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
-    null,
+    null
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -108,11 +108,11 @@ const PracticeArea = ({
       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(
         0.3,
-        audioContext.currentTime + 0.1,
+        audioContext.currentTime + 0.1
       );
       gainNode.gain.exponentialRampToValueAtTime(
         0.01,
-        audioContext.currentTime + 1.5,
+        audioContext.currentTime + 1.5
       );
 
       oscillator.start(audioContext.currentTime);
@@ -132,11 +132,11 @@ const PracticeArea = ({
         gainNode2.gain.setValueAtTime(0, audioContext.currentTime);
         gainNode2.gain.linearRampToValueAtTime(
           0.3,
-          audioContext.currentTime + 0.1,
+          audioContext.currentTime + 0.1
         );
         gainNode2.gain.exponentialRampToValueAtTime(
           0.01,
-          audioContext.currentTime + 1,
+          audioContext.currentTime + 1
         );
 
         oscillator2.start(audioContext.currentTime);
@@ -244,8 +244,12 @@ const PracticeArea = ({
                   <SelectValue placeholder="Select pattern" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1s</SelectItem>
-                  <SelectItem value="2">2s</SelectItem>
+                  <SelectItem value="1" disabled>
+                    1s
+                  </SelectItem>
+                  <SelectItem value="2" disabled>
+                    2s
+                  </SelectItem>
                   <SelectItem value="3">3s</SelectItem>
                   <SelectItem value="5">5s</SelectItem>
                   <SelectItem value="10">10s</SelectItem>
@@ -323,8 +327,12 @@ const PracticeArea = ({
                   <SelectValue placeholder="Select pattern" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1s</SelectItem>
-                  <SelectItem value="2">2s</SelectItem>
+                  <SelectItem value="1" disabled>
+                    1s
+                  </SelectItem>
+                  <SelectItem value="2" disabled>
+                    2s
+                  </SelectItem>
                   <SelectItem value="3">3s</SelectItem>
                   <SelectItem value="5">5s</SelectItem>
                   <SelectItem value="10">10s</SelectItem>
@@ -378,7 +386,10 @@ const PracticeArea = ({
               <h2 className="text-2xl font-bold mb-2">
                 {practiceMode === "pattern"
                   ? "Number Pattern Practice"
-                  : `${crossingType.charAt(0).toUpperCase() + crossingType.slice(1)} Crossing Practice`}
+                  : `${
+                      crossingType.charAt(0).toUpperCase() +
+                      crossingType.slice(1)
+                    } Crossing Practice`}
               </h2>
               <p className="text-lg">
                 {direction === "forward"
@@ -395,13 +406,17 @@ const PracticeArea = ({
               {sequence.map((num, index) => (
                 <div
                   key={index}
-                  className={`w-16 h-16 flex items-center justify-center text-xl font-bold rounded-lg border-2 ${index === currentIndex ? "border-blue-500 bg-blue-50" : "border-gray-300"} ${index < currentIndex ? "bg-green-100" : ""}`}
+                  className={`w-16 h-16 flex items-center justify-center text-xl font-bold rounded-lg border-2 ${
+                    index === currentIndex
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300"
+                  } ${index < currentIndex ? "bg-green-100" : ""}`}
                 >
                   {index < currentIndex
                     ? num
                     : index === currentIndex
-                      ? "?"
-                      : ""}
+                    ? "?"
+                    : ""}
                 </div>
               ))}
             </div>
@@ -430,7 +445,9 @@ const PracticeArea = ({
                   <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className={`flex items-center justify-center p-4 rounded-lg ${feedback === "correct" ? "bg-green-100" : "bg-red-100"}`}
+                    className={`flex items-center justify-center p-4 rounded-lg ${
+                      feedback === "correct" ? "bg-green-100" : "bg-red-100"
+                    }`}
                   >
                     {feedback === "correct" ? (
                       <>
