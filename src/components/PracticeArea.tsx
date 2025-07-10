@@ -430,7 +430,7 @@ const PracticeArea = ({
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     placeholder="Enter your answer"
-                    className="text-xl h-14 text-center w-32"
+                    className="text-xl h-14 text-center w-32 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                     autoFocus
                   />
                   <Button
